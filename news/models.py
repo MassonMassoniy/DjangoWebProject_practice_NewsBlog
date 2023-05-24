@@ -8,7 +8,7 @@ from django.contrib.auth.hashers import make_password
 # Create your models here.
 
 class User(AbstractBaseUser, PermissionsMixin):
-    ADMIN, NEWS_EDITOR, READER=range(1,4)
+    ADMIN, NEWS_EDITOR, READER = range(1,4)
 
     ROLE_TYPES = (
         (ADMIN,'Администратор'),             #1
@@ -30,8 +30,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name='Статус доступа',
     )
 
-    USERNAME_FIELD="username"
-    REQUIRED_FIELDS=[]
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = []
 
     def save(self, *args, **kwargs):
         # Если пароль не хэширован, то хэшируем его перед сохранением
@@ -40,14 +40,28 @@ class User(AbstractBaseUser, PermissionsMixin):
         super().save(*args, **kwargs)
 
 class Post(models.Model):
-    user=models.ForeignKey(User,on_delete=models.CASCADE,verbose_name='Пользователь создавший пост', null=True,blank=True, related_name='posts')
-    title=models.CharField(verbose_name='Заголовок',max_length=255,default='',null=True,blank=True)
-    text=models.TextField(verbose_name='Описание')
-    date_post=models.DateTimeField(default=timezone.now,verbose_name='Дата создания поста')
+    
+    DAILY_NEWS, IMPORTANT_NEWS, INTERESTING_NEWS, JUST_NEWS = range(1,5)
+
+    NEWS_TYPES = (
+        (DAILY_NEWS, 'Новость дня'),
+        (IMPORTANT_NEWS, 'Срочные новости'),
+        (INTERESTING_NEWS, 'Интересные новости'),
+        (JUST_NEWS, 'Обычные новости'),
+    )
+
+    user = models.ForeignKey(User,on_delete=models.CASCADE,verbose_name='Пользователь создавший новость', null=True,blank=True, related_name='news')
+    title = models.CharField(verbose_name='Заголовок новости',max_length=255,default='',null=True,blank=True)
+    text = models.TextField(verbose_name='Описание новости')
+    description = models.TextField(verbose_name='Текст новости')
+    news_type = models.IntegerField(verbose_name='Тип новости',default=JUST_NEWS,choices=NEWS_TYPES)
+    date_post = models.DateTimeField(default=timezone.now,verbose_name='Дата создания новости')
+
+    
 
     class Meta:
-        verbose_name='Пост'
-        verbose_name_plural='Посты'
+        verbose_name='Новость'
+        verbose_name_plural='Новости'
 
     def __str__(self) -> str:
         return self.title

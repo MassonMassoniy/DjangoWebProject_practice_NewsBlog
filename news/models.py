@@ -13,7 +13,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     ROLE_TYPES = (
         (ADMIN,'Администратор'),             #1
         (NEWS_EDITOR,'Новостной редактор'),  #2
-        (READER,'Читатель')              #3
+        (READER,'Читатель')                  #3
     )
 
     objects = UserManager()
@@ -44,16 +44,16 @@ class Post(models.Model):
     DAILY_NEWS, IMPORTANT_NEWS, INTERESTING_NEWS, JUST_NEWS = range(1,5)
 
     NEWS_TYPES = (
-        (DAILY_NEWS, 'Новость дня'),
-        (IMPORTANT_NEWS, 'Срочные новости'),
-        (INTERESTING_NEWS, 'Интересные новости'),
-        (JUST_NEWS, 'Обычные новости'),
+        (DAILY_NEWS, 'Новость дня'),                #1
+        (IMPORTANT_NEWS, 'Срочные новости'),        #2
+        (INTERESTING_NEWS, 'Интересные новости'),   #3
+        (JUST_NEWS, 'Обычные новости'),             #4
     )
 
     user = models.ForeignKey(User,on_delete=models.CASCADE,verbose_name='Пользователь создавший новость', null=True,blank=True, related_name='news')
     title = models.CharField(verbose_name='Заголовок новости',max_length=255,default='',null=True,blank=True)
-    text = models.TextField(verbose_name='Описание новости')
-    description = models.TextField(verbose_name='Текст новости')
+    text = models.TextField(verbose_name='Текст новости')
+    description = models.TextField(verbose_name='Описание новости')
     news_type = models.IntegerField(verbose_name='Тип новости',default=JUST_NEWS,choices=NEWS_TYPES)
     date_post = models.DateTimeField(default=timezone.now,verbose_name='Дата создания новости')
 

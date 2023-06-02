@@ -69,4 +69,3 @@ class TokenRefreshView(TokenRefreshSlidingView):
 class RegisterView(GenericViewSet, mixins.CreateModelMixin):
     permission_classes=[AllowAny]
     serializer_class=UserSerializer
-

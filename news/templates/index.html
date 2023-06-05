@@ -30,13 +30,16 @@
         </header>
       
         <div class="nav-scroller py-1 mb-2">
-            <nav class="nav d-flex justify-content-between">
-                <a class="p-2 link-secondary create_news_button" href="add_news">Добавить новость</a>
+            <nav class="nav justify-content-between" style="display: inline-table;">
+                <a class="p-2 link-secondary create_news_button" href="">Добавить новость</a>
+            </nav>
+            <nav class="nav justify-content-between" style="display: inline-table;">
+                <a class="p-2 link-secondary create_notification_button" href="">Написать оповещение</a>
             </nav>
         </div>
     </div>
 
-    <div class="container panel" style="display:none;">
+    <div class="container news_panel" style="display:none;">
         <form method="post" action="" onsubmit="event.preventDefault();">
             <label style="margin-top: 10px;">Название новости:</label>
             <input type="text" name="" id="news_title_input" style="width: 100%;"/>
@@ -56,6 +59,20 @@
             </select></p>
             <button class="btn btn-sm btn-outline-secondary button3">Опубликовать новость</button>
         </form>
+    </div>
+
+    <div class="container notification_panel" style="display:none;">
+        <form method="post" action="" onsubmit="event.preventDefault();">
+            <label style="margin-top: 10px;">Текст оповещения:</label>
+            <input type="text" name="" id="notification_input" style="width: 100%; height: 140px;"/>
+
+            <button class="btn btn-sm btn-outline-secondary" id="button5" style="margin-top: 10px;">Отобразить оповещение</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <label style="margin-top: 10px;">Оповещение:</label>
+        <p id="notification_id"></p>
     </div>
 
     <main class="container">
@@ -100,7 +117,14 @@
 
         $(".create_news_button").click(
             function () {
-                $(".panel").slideToggle("slow");
+                $(".news_panel").slideToggle("slow");
+                return false;
+            }
+        )
+
+        $(".create_notification_button").click(
+            function () {
+                $(".notification_panel").slideToggle("slow");
                 return false;
             }
         )
@@ -182,10 +206,32 @@
 
     $('.button4').click(function(){
         localStorage.setItem('access_token', '')
-    }).done(function(msg) {
-        alert('Вы вышли из аккаунта')
     });
     
+
+
+    let url_webs = `ws://${window.location.host}/ws/socket-server/`
+
+    const notificationSocket = new WebSocket(url_webs);
+
+    notificationSocket.onmessage = function(e){
+        const e_data = JSON.parse(e.data)
+        console.log(e_data)
+        document.querySelector('#notification_id').innerHTML += (e_data.message + '<br>')
+    };
+
+    notificationSocket.onclose = function(e){
+        console.error('Chat socket was closed because of an error')
+    }
+
+    document.querySelector('#button5').onclick = function(e){
+        const message = (document.querySelector('#notification_input')).value
+        
+        notificationSocket.send(JSON.stringify({
+            'message':message
+        }))
+    }
+
 </script>
 
 </html>

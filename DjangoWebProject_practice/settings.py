@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'drf_spectacular_sidecar',
     'news',
     'corsheaders',
+    'channels',
 ]
 
 # Middleware framework
@@ -92,10 +93,18 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
         },
-    },
+    }, 
 ]
 
 WSGI_APPLICATION = 'DjangoWebProject_practice.wsgi.application'
+
+ASGI_APPLICATION = 'DjangoWebProject_practice.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default':{
+        'BACKEND':'channels.layers.InMemoryChannelLayer'
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases

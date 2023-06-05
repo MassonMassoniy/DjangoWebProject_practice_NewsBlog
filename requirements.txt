@@ -7,3 +7,6 @@ drf-spectacular-sidecar
 django-rest-swagger
 django-rest-authtoken
 django-cors-headers
+channels
+daphne
+asgiref
